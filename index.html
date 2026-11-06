@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Under the same sky — para Nathan</title>
+  <meta name="description" content="Un pequeño espacio creado con cariño para Nathan" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sky-dark: #0f1c2e;
+      --sky-mid: #1a2f4a;
+      --accent: #7eb8e0;
+      --soft-blue: #a8d4f0;
+      --cream: #f8f4ef;
+      --heart-blue: #6eb5e0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      background: var(--sky-dark);
+      overflow: hidden;
+    }
+
+    /* ========== SCREENS ========== */
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.75s ease, visibility 0.75s ease;
+      z-index: 1;
+      background: radial-gradient(ellipse at center, #1a2f4a 0%, #0a1420 100%);
+      overflow: auto;
+      padding: 16px;
+    }
+
+    .screen.active {
+      opacity: 1;
+      visibility: visible;
+      z-index: 10;
+    }
+
+    .screen-content {
+      position: relative;
+      max-width: 96%;
+      max-height: 94vh;
+    }
+
+    .screen-content img {
+      display: block;
+      max-width: 100%;
+      max-height: 86vh;
+      width: auto;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* ========== HEART BUTTON ========== */
+    .heart-btn {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 5%;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(26, 47, 74, 0.75);
+      backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(110, 181, 224, 0.55);
+      color: var(--heart-blue);
+      font-size: 1.55rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 20;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.3);
+      animation: gentlePulse 2.8s ease-in-out infinite;
+    }
+
+    .heart-btn:hover {
+      background: rgba(42, 74, 110, 0.9);
+      transform: translateX(-50%) scale(1.12);
+      box-shadow: 0 0 28px rgba(110, 181, 224, 0.5);
+    }
+
+    .heart-btn:active {
+      transform: translateX(-50%) scale(0.96);
+    }
+
+    @keyframes gentlePulse {
+      0%, 100% { box-shadow: 0 4px 18px rgba(0,0,0,0.3), 0 0 0 0 rgba(110, 181, 224, 0.3); }
+      50% { box-shadow: 0 4px 18px rgba(0,0,0,0.3), 0 0 0 10px rgba(110, 181, 224, 0); }
+    }
+
+    /* ========== CONTINUE BUTTON (intro) ========== */
+    .continue-btn {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 5%;
+      padding: 12px 30px;
+      background: rgba(26, 47, 74, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(168, 212, 240, 0.45);
+      border-radius: 40px;
+      color: var(--soft-blue);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 20;
+      letter-spacing: 0.03em;
+    }
+
+    .continue-btn:hover {
+      background: rgba(42, 74, 110, 0.95);
+      box-shadow: 0 0 22px rgba(126, 184, 224, 0.4);
+      transform: translateX(-50%) translateY(-2px);
+    }
+
+    /* ========== MENU ========== */
+    .menu-container {
+      position: relative;
+      max-width: 96%;
+      max-height: 92vh;
+    }
+
+    .menu-container img {
+      display: block;
+      max-width: 100%;
+      max-height: 86vh;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      user-select: none;
+    }
+
+    .hotspot {
+      position: absolute;
+      cursor: pointer;
+      border-radius: 20px;
+      transition: all 0.25s ease;
+      z-index: 20;
+    }
+
+    .hotspot:hover {
+      transform: scale(1.07);
+      box-shadow: 0 0 32px rgba(126, 184, 224, 0.55);
+      background: rgba(168, 212, 240, 0.07);
+    }
+
+    .hotspot:active {
+      transform: scale(0.97);
+    }
+
+    /* Positions for the 4 icons */
+    .hotspot-envelope {
+      width: 21%;
+      height: 27%;
+      top: 13%;
+      left: 14%;
+    }
+
+    .hotspot-cassette {
+      width: 21%;
+      height: 23%;
+      top: 16%;
+      right: 14%;
+    }
+
+    .hotspot-camera {
+      width: 21%;
+      height: 25%;
+      bottom: 13%;
+      left: 14%;
+    }
+
+    .hotspot-scroll {
+      width: 21%;
+      height: 23%;
+      bottom: 15%;
+      right: 14%;
+    }
+
+    /* ========== BACK BUTTON ========== */
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 50;
+      padding: 10px 20px;
+      background: rgba(15, 28, 46, 0.82);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(168, 212, 240, 0.35);
+      border-radius: 30px;
+      color: var(--soft-blue);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .back-btn.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .back-btn:hover {
+      background: rgba(42, 74, 110, 0.95);
+      box-shadow: 0 0 16px rgba(126, 184, 224, 0.3);
+    }
+
+    /* ========== MUSIC TOGGLE ========== */
+    .music-toggle {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      z-index: 60;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 1px solid rgba(168, 212, 240, 0.4);
+      background: rgba(15, 28, 46, 0.82);
+      backdrop-filter: blur(10px);
+      color: var(--soft-blue);
+      font-size: 1.35rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    }
+
+    .music-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 22px rgba(126, 184, 224, 0.35);
+    }
+
+    .music-toggle.playing {
+      color: #f0c4a8;
+      border-color: rgba(240, 196, 168, 0.5);
+    }
+
+    /* Hidden YouTube player */
+    #yt-bg {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* ========== MODALS ========== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 14, 24, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.35s ease;
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: linear-gradient(165deg, #1a2f4a, #122033);
+      border-radius: 20px;
+      padding: 36px 30px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      border: 1px solid rgba(168, 212, 240, 0.25);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.55);
+      transform: scale(0.93);
+      transition: transform 0.35s ease;
+    }
+
+    .modal-overlay.open .modal {
+      transform: scale(1);
+    }
+
+    .modal h3 {
+      font-family: 'Playfair Display', serif;
+      color: var(--soft-blue);
+      font-size: 1.55rem;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .modal p {
+      color: rgba(248, 244, 239, 0.88);
+      font-size: 1.15rem;
+      line-height: 1.55;
+      margin-bottom: 26px;
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .modal-btn {
+      padding: 12px 24px;
+      border-radius: 30px;
+      border: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .modal-btn.primary {
+      background: var(--soft-blue);
+      color: var(--sky-dark);
+    }
+
+    .modal-btn.primary:hover {
+      background: #c5e4f7;
+      transform: translateY(-2px);
+    }
+
+    .modal-btn.secondary {
+      background: transparent;
+      color: var(--soft-blue);
+      border: 1px solid rgba(168, 212, 240, 0.4);
+    }
+
+    .modal-btn.secondary:hover {
+      background: rgba(168, 212, 240, 0.1);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 700px) {
+      .screen-content img,
+      .menu-container img {
+        max-height: 80vh;
+        border-radius: 12px;
+      }
+
+      .heart-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 1.4rem;
+        bottom: 4%;
+      }
+
+      .continue-btn {
+        font-size: 1.05rem;
+        padding: 11px 24px;
+        bottom: 4%;
+      }
+
+      .hotspot-envelope,
+      .hotspot-cassette,
+      .hotspot-camera,
+      .hotspot-scroll {
+        width: 24%;
+        height: 27%;
+      }
+
+      .back-btn {
+        top: 12px;
+        left: 12px;
+        padding: 8px 16px;
+        font-size: 0.95rem;
+      }
+
+      .music-toggle {
+        width: 44px;
+        height: 44px;
+        bottom: 14px;
+        right: 14px;
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hidden YouTube player for background music -->
+  <div id="yt-bg">
+    <iframe 
+      id="ytPlayer"
+      src=""
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <!-- ========== 1. COVER ========== -->
+  <section class="screen active" id="screen-cover">
+    <div class="screen-content">
+      <img src="slide1.png" alt="Under the same sky" />
+      <!-- Blue heart button -->
+      <button class="heart-btn" onclick="goTo('intro')" title="Continuar">💙</button>
+    </div>
+  </section>
+
+  <!-- ========== 2. INTRO MESSAGE ========== -->
+  <section class="screen" id="screen-intro">
+    <div class="screen-content">
+      <img src="slide2.png" alt="Mensaje introductorio" />
+      <!-- Button to menu -->
+      <button class="continue-btn" onclick="goTo('menu')">Continuar →</button>
+    </div>
+  </section>
+
+  <!-- ========== 3. MENU (interactive icons) ========== -->
+  <section class="screen" id="screen-menu">
+    <div class="menu-container">
+      <img src="slide3.png" alt="Menú de regalos" />
+
+      <!-- Clickable hotspots -->
+      <div class="hotspot hotspot-envelope" title="Abrir la carta" onclick="goTo('letter')"></div>
+      <div class="hotspot hotspot-cassette" title="Playlist de canciones" onclick="openModal('musicModal')"></div>
+      <div class="hotspot hotspot-camera" title="Video especial" onclick="openModal('tiktokModal')"></div>
+      <div class="hotspot hotspot-scroll" title="Leer el poema" onclick="goTo('poem')"></div>
+    </div>
+  </section>
+
+  <!-- ========== 4. LETTER ========== -->
+  <section class="screen" id="screen-letter">
+    <div class="screen-content">
+      <img src="slide4.png" alt="My sweet angel — carta" />
+    </div>
+  </section>
+
+  <!-- ========== 5. POEM ========== -->
+  <section class="screen" id="screen-poem">
+    <div class="screen-content">
+      <img src="slide5.png" alt="Poema y cierre" />
+    </div>
+  </section>
+
+  <!-- Back button -->
+  <button class="back-btn" id="backBtn" onclick="goTo('menu')">← Volver al menú</button>
+
+  <!-- Music toggle -->
+  <button class="music-toggle" id="musicToggle" title="Música" onclick="toggleMusic()">♫</button>
+
+  <!-- ========== MODAL: Playlist ========== -->
+  <div class="modal-overlay" id="musicModal">
+    <div class="modal">
+      <h3>Cassette ♪</h3>
+      <p>Aquí está la playlist que preparé pensando en ti.</p>
+      <div class="modal-btns">
+        <a class="modal-btn primary" href="https://www.youtube.com/playlist?list=PLEzyq7M_xLNY" target="_blank" rel="noopener">
+          Abrir playlist
+        </a>
+        <button class="modal-btn secondary" onclick="closeModal('musicModal')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MODAL: TikTok ========== -->
+  <div class="modal-overlay" id="tiktokModal">
+    <div class="modal">
+      <h3>Cámara ✧</h3>
+      <p>Una playlist de TikTok que preparé pensando en ti.</p>
+      <div class="modal-btns">
+        <a class="modal-btn primary" href="https://vt.tiktok.com/ZS9yovM2T5Ttr-SSYJ5/" target="_blank" rel="noopener">
+          Abrir playlist
+        </a>
+        <button class="modal-btn secondary" onclick="closeModal('tiktokModal')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========== NAVIGATION ==========
+    function goTo(screenName) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+      const screen = document.getElementById('screen-' + screenName);
+      if (screen) screen.classList.add('active');
+
+      // Show back button only on letter and poem
+      const backBtn = document.getElementById('backBtn');
+      if (screenName === 'letter' || screenName === 'poem') {
+        backBtn.classList.add('visible');
+      } else {
+        backBtn.classList.remove('visible');
+      }
+    }
+
+    // ========== MODALS ==========
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+      }
+    });
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.classList.remove('open');
+      });
+    });
+
+    // ========== MUSIC ==========
+    let musicPlaying = false; // starts false until user interacts
+    const musicToggle = document.getElementById('musicToggle');
+    const ytPlayer = document.getElementById('ytPlayer');
+
+    const musicURL = "https://www.youtube.com/embed/L5yzcMEM1nY?enablejsapi=1&autoplay=1&loop=1&playlist=L5yzcMEM1nY&controls=0&modestbranding=1&rel=0&mute=0";
+
+    function startMusic() {
+      ytPlayer.src = musicURL;
+      musicPlaying = true;
+      musicToggle.classList.add('playing');
+      musicToggle.textContent = '♪';
+    }
+
+    function stopMusic() {
+      ytPlayer.src = "";
+      musicPlaying = false;
+      musicToggle.classList.remove('playing');
+      musicToggle.textContent = '♫';
+    }
+
+    function toggleMusic() {
+      if (musicPlaying) {
+        stopMusic();
+      } else {
+        startMusic();
+      }
+    }
+
+    // Start music on the first meaningful interaction (heart button or any click)
+    let musicStarted = false;
+    function tryStartMusic() {
+      if (!musicStarted) {
+        musicStarted = true;
+        startMusic();
+      }
+    }
+
+    // When user clicks the blue heart, also start the music
+    document.querySelector('.heart-btn').addEventListener('click', tryStartMusic);
+
+    // Also allow any click on the page to start it (browsers need a user gesture)
+    document.body.addEventListener('click', tryStartMusic, { once: true });
+  </script>
+</body>
+</html>
